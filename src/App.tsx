@@ -1,9 +1,20 @@
-export default function App(){
+import styles from './app.module.css';
+import { Header } from './components/Header';
+
+
+export default function App() {
+  function handleRestartGame() {
+
+  }
+
   return (
-    <div>
-      <h1>Hello World</h1>
+    <div className={styles.container}>
+      <main>
+        <Header current={5} max={10} onRestart={handleRestartGame} />
+
+      </main>
 
 
-      </div>
+    </div>
   )
 }
