@@ -1,12 +1,14 @@
 
 import styles from './styles.module.css';
 
-type Props ={
-    letters: string[];
-}
-export function LettersUsed({ letters }: Props) {
+// type Props = {
+//     letters: string[];
+// }
+export function LettersUsed() {
 
-    return (<div className={styles.lettersUsed}>
+    return (
+        <div className={styles.lettersUsed}>
 
-    </div>)
+            <h5>Letras Utilizadas</h5>
+        </div>)
 }
