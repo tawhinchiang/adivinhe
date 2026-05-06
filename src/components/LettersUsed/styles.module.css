@@ -12,3 +12,10 @@
     margin: 0.75rem 0;
     font-weight: 600;
 }
+
+.lettersUsed > div{
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
