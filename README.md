@@ -1,3 +1,6 @@
+<img width="1266" height="857" alt="image" src="https://github.com/user-attachments/assets/fd782a02-7905-4ee0-82af-41f8dd882431" />
+
+
 # Adivinhe
 
 Jogo simples de adivinhação de palavras desenvolvido com React, TypeScript e Vite.
