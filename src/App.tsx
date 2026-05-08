@@ -1,44 +1,120 @@
 import styles from './app.module.css';
+import { useEffect, useState } from 'react';
+import { WORDS } from './utils/words';
+import type { Challenge } from './utils/words';
 
 import { Header } from './components/Header';
 import { Tip } from './components/Tip';
 import { Letter } from './components/Letter';
 import { Input } from './components/Input';
 import { Button } from './components/Button';
-import { LettersUsed } from './components/LettersUsed';
+import { LettersUsed, type LettersUsedProps } from './components/LettersUsed';
+const ATTEMPTS_MARGIN = 5;
 
 export default function App() {
-  function handleRestartGame() {
+  const [score, setScore] = useState(0)
+  const [letter, setLetter] = useState('')
+  const [lettersUsed, setLettersUsed] = useState<LettersUsedProps[]>([])
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
 
+  function startGame() {
+    const index = Math.floor(Math.random() * WORDS.length);
+    const randomWord = WORDS[index];
+    setChallenge(randomWord);
+    setScore(0);
+    setLetter('');
+    setLettersUsed([]);
   }
 
-  return (
-    <div className={styles.container}>
-      <main>
-        <Header current={5} max={10} onRestart={handleRestartGame} />
+  function handleConfirm() {
+    if (!challenge) {
+      return
+    }
+    if (!letter.trim()) {
+      return alert('Digite uma letra')
+    }
+    const value = letter.toUpperCase()
+    const exists = lettersUsed.find((used) => used.value.toUpperCase() === value)
 
-        <Tip tip="Linguagem de Programação Dinamica" />
-        <div className={styles.word}>
+    if (exists) {
+      setLetter('')
+      return alert('Letra já utilizada: ' + value)
+    }
 
-          <Letter value="A" />
-          <Letter value="A" />
-          <Letter value="A" />
-          <Letter value="A" />
-          <Letter value="A" />
-
-        </div>
-
-        <h4>
-          Palpite
-        </h4>
-        <div className={styles.guess}>
-          <Input autoFocus maxLength={1} placeholder='?' />
-          <Button title="Confirmar" />
-        </div>
-        <LettersUsed />
-      </main>
+    const hits = challenge.word.toUpperCase().split('').filter((char) => char === value).length
+    const correct = hits > 0
+    const currentScore = score + hits
 
 
-    </div>
-  )
-}
+    setLettersUsed((prevState) => [...prevState, { value, correct }])
+    setScore(currentScore)
+    setLetter('')
+  }
+
+  function handleRestartGame() {
+    const isConfirmed =window.confirm('Tem certeza que deseja reiniciar o jogo?')
+    if(isConfirmed){
+      startGame()
+    }
+  }
+  function endGame(message: string) {
+    alert(message)
+    startGame();
+  } {
+
+    useEffect(() => {
+      startGame();
+    }, []);
+
+    useEffect(() => {
+      if (!challenge) {
+        return
+      }
+
+      setTimeout(() => {
+        if (score === challenge.word.length) {
+         return endGame('Parabéns, você venceu!')
+          startGame();
+        }
+        const attempptsLimit= challenge.word.length + ATTEMPTS_MARGIN
+        if(lettersUsed.length === attempptsLimit){
+          return endGame('Que pena, você usou todas as tentativas! A palavra era: ' + challenge.word)
+        }
+      }, 200)
+    }, [score, lettersUsed.length])
+
+    if (!challenge) {
+      return
+    }
+
+    return (
+      <div className={styles.container}>
+        <main>
+          <Header current={lettersUsed.length} max={challenge?.word.length + ATTEMPTS_MARGIN} onRestart={handleRestartGame} />
+
+          <Tip tip={challenge?.tip} />
+          <div className={styles.word}>
+            {
+              challenge.word.split("").map((letter, index) => {
+                const letterUsed = lettersUsed.find(used => used.value.toUpperCase() === letter.toUpperCase())
+                return <Letter key={index} value={letterUsed?.value} color={letterUsed?.correct ? "correct" : "default"} />
+              })
+
+            }
+
+
+
+
+
+          </div>
+
+          <h4>Palpite</h4>
+          <div className={styles.guess}>
+            <Input autoFocus maxLength={1} placeholder="?" value={letter} onChange={(e) => setLetter(e.target.value)} />
+            <Button title="Confirmar" onClick={handleConfirm} />
+          </div>
+          <LettersUsed data={lettersUsed} />
+        </main>
+      </div>
+    );
+  }}

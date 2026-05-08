@@ -1,17 +1,19 @@
-import styles from './styles.module.css'
+import styles from './styles.module.css';
 import tipIcon from '../../assets/tip.svg';
+
 type Props = {
-    tip: String
-}
+  tip: string;
+};
+
 export function Tip({ tip }: Props) {
-    return <div className={styles.tip}>
+  return (
+    <div className={styles.tip}>
+      <img src={tipIcon} alt="Icone de Dica" />
 
-        <img src={tipIcon} alt="Icone de Dica" />
-
-        <div>
-            <h3>Dica</h3>
-            <p>{tip}</p>
-        </div>
-
+      <div>
+        <h3>Dica</h3>
+        <p>{tip}</p>
+      </div>
     </div>
+  );
 }
